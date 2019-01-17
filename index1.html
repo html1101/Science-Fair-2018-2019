@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        #a {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="a"></canvas>
+    <script>
+        var b = document.getElementById("a"),
+            c = b.getContext("2d"),
+            xhttp = new XMLHttpRequest();
+        b.width = window.innerWidth;
+        b.height = window.innerHeight;
+        xhttp.onreadystatechange = function () {
+            if (this.status == 200 && this.readyState == 4) {
+                var data = JSON.parse(this.responseText),
+                    pushData = c.createImageData(800, 600),
+                    numData = pushData.data,
+                    num = 0;
+                console.log(data);
+                for (var i = 0; i < data.length; i += 4) {
+                    numData[i] = data[num].pop;
+                    numData[i + 1] = data[num].pop;
+                    numData[i + 2] = data[num].pop;
+                    numData[i + 3] = 255;
+                    num++;
+                }
+                c.putImageData(pushData, 0, 0);
+                console.log(data);
+            }
+        }
+        xhttp.open("GET", "/data");
+        xhttp.send();
+    </script>
+</body>
+
+</html>

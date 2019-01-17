@@ -1,4 +1,6 @@
 var getPixels = require("get-pixels"),
+http = require("http"),
+fs = require("fs"),
 data = [];
 class INFO {
     constructor(pop) {
@@ -19,5 +21,18 @@ getPixels("./pop.png", function(err, pixels) {
             data.push(new INFO(dat > 255 ? 255 : dat));
         }
     }
-    console.log(data);
+    // JSON.stringify(data, null, 4)
+    http.createServer(function(req, res) {
+        if(req.url == "/") {
+            fs.readFile("./index1.html", "utf8", function(err, data) {
+                if(err) throw err;
+                res.write(data);
+                res.end();
+            });
+        }
+        else if(req.url == "/data") {
+            res.write(JSON.stringify(data, null));
+            res.end();
+        }
+    }).listen(3030, "localhost");
 });
