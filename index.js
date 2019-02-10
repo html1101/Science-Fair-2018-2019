@@ -1,4 +1,13 @@
 var https = require("https");
+// This creates trying.json, which formulates a response like this:
+// 	"Sat Jan 02 2010 00:00:00 GMT-0600 (CST)": [
+// {
+// 	"severity": 7,
+// 	"date": "2010-01-02T06:00:00.000Z",
+// 	"state": "Alabama",
+// 	"pop": "4779736"
+// }
+// }
 async function f(yr) {
     let getIt = new Promise((resolve, reject) => {
         https.get('https://api.census.gov/data/2017/pep/population?get=DATE_DESC,GEONAME,POP&for=state:*&DATE=' + yr + '&key=3317925effc6d189c00c4658b130560990241f30', (resp) => {
@@ -105,8 +114,34 @@ fs.readFile("./Formatted.csv", "utf8", function (err, data) {
                     }
                 }
             }
-            console.log(myAnswer, realYr);
+            for (var i = 0; i < myAnswer.length; i++) {
+                myAnswer[i].severity = Number(myAnswer[i].severity.split("Level ").join(""));
+            }
             // Okay. Now we have the severity, the state, and the date.
             // YES!
+            // Let's start by creating our weights.
+            var weightsSeverity = [];
+            // Okay. Now we need to push in all our weights.
+            // So we have 50 states, meaning there will be 50 * 50 weights.
+            var orderByDate = {};
+            for (var i = 0; i < myAnswer.length; i++) {
+                var copyMyAns = myAnswer.slice();
+                copyMyAns.splice(i, 1);
+                orderByDate[myAnswer[i].date] = [];
+                for (var ii = 0; ii < copyMyAns.length; ii++) {
+                    if (myAnswer[i].date.toString() == copyMyAns[ii].date.toString()) {
+                        orderByDate[myAnswer[i].date].push(copyMyAns[ii]);
+                    }
+                }
+            }
+            /*
+            Okay, so. We have some people, x. We then have the severity, y.
+            Let's say y = Level 1.
+            For now we won't use the pop, but maybe in the future we will.
+            */
+            // Okay, we're going to do a simple neural network now. One that will hopefully work.
+            fs.writeFile("./trying.json", JSON.stringify(orderByDate, null, "\t"), function (e) {
+                if (e) throw e;
+            });
         });
 });

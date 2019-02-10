@@ -18,6 +18,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/html1011/science-fair-2018-2019#readme",
   "dependencies": {
-    "get-pixels": "^3.3.2"
+    "get-pixels": "^3.3.2",
+    "mathjs": "^5.4.2"
   }
 }
