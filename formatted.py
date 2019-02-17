@@ -1,6 +1,5 @@
 with open("./NeuralDataParsed.txt", "r") as f:
     content = eval(f.read())
-
 '''
 Here's a sample:
 [
@@ -34,10 +33,11 @@ for i in content:
             # Going through each of the states...
             for iii in z[1]:
                 # Going through the info for that state...
-                if iii[1] == ii[1]:
-                    # Checking if the date is the same.
-                    stateWeight.append(iii[0])
-        data.append([i[0], ii[1], ii[0], stateWeight]) # The date, the severity, the input severities
+                # Checking if the date is the same.
+                stateWeight.append(iii[0])
+        data.append(
+            [i[0], ii[1], ii[0],
+             stateWeight])  # The date, the severity, the input severities
         # Here's where things get a little tricky. We also need to get our ys - which are in the future. As I am
         # Absolutely terrible at Python this could get very messy. OR we could push all our weights into a large
         # Array, which we can access and it won't be quite so messy. It'll take longer to execute, but it'll be easier to follow.
